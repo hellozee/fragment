@@ -1,4 +1,4 @@
-/*Package meshio  Package contains the data structures and functions
+/*Package meshio  contains the data structures and functions
   required for reading a Wavefront obj to format which
   can be used by the renderer to properly render an image.
 */
@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-//Model  Data Structure fol holding a Wavefront obj Model
+//Model  Data Structure for holding a Wavefront obj Model
 type Model struct {
 	Verts []Vec3f
 	Faces []Vec3i

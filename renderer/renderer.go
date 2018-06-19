@@ -1,5 +1,7 @@
-/*Package renderer  The renderer is the heart of fragment, it the part which
-draws the lines and points according to the data provided by the other packages.
+/*Package renderer  contains the data structure and functions required for the
+renderer.
+  The renderer is the heart of fragment, it is the part which draws the
+  lines and points according to the data provided by the other packages.
 */
 package renderer
 
@@ -81,7 +83,7 @@ func (r *Renderer) DrawFaces(m meshio.Model, col color.Color) {
 	}
 }
 
-//DrawTriangle  Function for drawing Triangles
+//DrawTriangle  Function for drawing bare Triangles
 func (r *Renderer) DrawTriangle(verts []meshio.Vec3f, c color.Color) {
 	for i := 0; i < 3; i++ {
 		v1 := verts[i]

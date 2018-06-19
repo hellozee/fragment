@@ -7,7 +7,7 @@ type Vec3f struct {
 	X, Y, Z float64
 }
 
-//Vec3i  Data Structure for holding a 3d vector with int data
+//Vec3i  Data Structure for holding a 3d vector with integer data
 type Vec3i struct {
 	A, B, C int
 }
