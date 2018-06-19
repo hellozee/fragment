@@ -83,19 +83,56 @@ func (r *Renderer) DrawFaces(m meshio.Model, col color.Color) {
 	}
 }
 
+//FillTriangle  Function for filling the triangle with the given color
+func (r *Renderer) FillTriangle(verts []meshio.Vec2i, c color.Color) {
+
+	temp := meshio.SortByX(verts)
+	x1 := temp[0].X
+	x2 := temp[2].X
+	temp = meshio.SortByY(verts)
+	y1 := temp[0].Y
+	y2 := temp[2].Y
+	verts[1].X, verts[1].Y = verts[1].X-verts[0].X, verts[1].Y-verts[0].Y
+	verts[2].X, verts[2].Y = verts[2].X-verts[0].X, verts[2].Y-verts[0].Y
+	scalar := verts[1].X*verts[2].Y - verts[2].X*verts[1].Y
+	for i := x1; i < x2; i++ {
+		p1 := i - verts[0].X
+		for j := y1; j < y2; j++ {
+			p2 := j - verts[0].Y
+			t := p1*(verts[1].Y-verts[2].Y) + p2*(verts[2].X-verts[1].X) + scalar
+			wa := float64(t) / float64(scalar)
+			if wa < 0 || wa > 1 {
+				continue
+			}
+			wb := float64(p1*verts[2].Y-p2*verts[2].X) / float64(scalar)
+			if wb < 0 || wb > 1 {
+				continue
+			}
+			wc := float64(p2*verts[1].X-p1*verts[1].Y) / float64(scalar)
+			if wc < 0 || wc > 1 {
+				continue
+			}
+			r.img.Set(i, j, c)
+		}
+	}
+
+}
+
 //DrawTriangle  Function for drawing bare Triangles
 func (r *Renderer) DrawTriangle(verts []meshio.Vec3f, c color.Color) {
+	var points []meshio.Vec2i
+
 	for i := 0; i < 3; i++ {
-		v1 := verts[i]
-		v2 := verts[(i+1)%3]
+		v := verts[i]
 
-		x1 := (v1.X + 1.0) * float64(r.width/2)
-		y1 := (v1.Y + 1.0) * float64(r.height/2)
-		x2 := (v2.X + 1.0) * float64(r.width/2)
-		y2 := (v2.Y + 1.0) * float64(r.height/2)
+		x1 := (v.X + 1.0) * float64(r.width/2)
+		y1 := (v.Y + 1.0) * float64(r.height/2)
 
-		r.DrawLine(int(x1), int(y1), int(x2), int(y2), c)
+		p := meshio.Vec2i{X: int(x1), Y: int(y1)}
+		points = append(points, p)
 	}
+
+	r.FillTriangle(points, c)
 }
 
 //Save  Function for saving the Image to a png File

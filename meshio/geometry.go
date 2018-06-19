@@ -1,6 +1,9 @@
 package meshio
 
-import "math"
+import (
+	"math"
+	"math/rand"
+)
 
 //Vec3f  Data Structure for holding a 3d vector with float data
 type Vec3f struct {
@@ -10,6 +13,11 @@ type Vec3f struct {
 //Vec3i  Data Structure for holding a 3d vector with integer data
 type Vec3i struct {
 	A, B, C int
+}
+
+//Vec2i  Data Structure for holding a 2d vector with integer data
+type Vec2i struct {
+	X, Y int
 }
 
 //Add  Function for adding 2 Vectors
@@ -66,4 +74,68 @@ func (v1 *Vec3f) Norm() float64 {
 	root := math.Sqrt(sum)
 
 	return root
+}
+
+//SortByX  Function for sorting vertices according to their x co-ordinate
+func SortByX(a []Vec2i) []Vec2i {
+	if len(a) < 2 {
+		return a
+	}
+
+	left, right := 0, len(a)-1
+
+	// Pick a pivot
+	pivotIndex := rand.Int() % len(a)
+
+	// Move the pivot to the right
+	a[pivotIndex], a[right] = a[right], a[pivotIndex]
+
+	// Pile elements smaller than the pivot on the left
+	for i := range a {
+		if a[i].X < a[right].X {
+			a[i], a[left] = a[left], a[i]
+			left++
+		}
+	}
+
+	// Place the pivot after the last smaller element
+	a[left], a[right] = a[right], a[left]
+
+	// Go down the rabbit hole
+	SortByX(a[:left])
+	SortByX(a[left+1:])
+
+	return a
+}
+
+//SortByY  Function for sorting vertices according to their y co-ordinate
+func SortByY(a []Vec2i) []Vec2i {
+	if len(a) < 2 {
+		return a
+	}
+
+	left, right := 0, len(a)-1
+
+	// Pick a pivot
+	pivotIndex := rand.Int() % len(a)
+
+	// Move the pivot to the right
+	a[pivotIndex], a[right] = a[right], a[pivotIndex]
+
+	// Pile elements smaller than the pivot on the left
+	for i := range a {
+		if a[i].Y < a[right].Y {
+			a[i], a[left] = a[left], a[i]
+			left++
+		}
+	}
+
+	// Place the pivot after the last smaller element
+	a[left], a[right] = a[right], a[left]
+
+	// Go down the rabbit hole
+	SortByY(a[:left])
+	SortByY(a[left+1:])
+
+	return a
 }
