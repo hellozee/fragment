@@ -1,3 +1,8 @@
+/*Package meshio  Package contains the data structures and functions
+  required for reading a Wavefront obj to format which
+  can be used by the renderer to properly render an image.
+*/
+
 package meshio
 
 import (
@@ -7,11 +12,13 @@ import (
 	"strings"
 )
 
+//Model  Data Structure fol holding a Wavefront obj Model
 type Model struct {
 	Verts []Vec3f
 	Faces []Vec3i
 }
 
+//NewModel  Function for parsing a Wavefront obj and creating a new model
 func NewModel(filename string) Model {
 	file, err := os.Open(filename)
 	check(err)

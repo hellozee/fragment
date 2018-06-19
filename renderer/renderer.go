@@ -1,3 +1,6 @@
+/*Package renderer  The renderer is the heart of fragment, it the part which
+draws the lines and points according to the data provided by the other packages.
+*/
 package renderer
 
 import (
@@ -10,11 +13,13 @@ import (
 	"github.com/hellozee/fragment/meshio"
 )
 
+//Renderer  Data Structure for holding the Renderer
 type Renderer struct {
 	img           *image.RGBA
 	width, height int
 }
 
+//DrawLine  Function for drawing straight Lines
 func (r *Renderer) DrawLine(x1, y1, x2, y2 int, c color.Color) {
 	var xInc, yInc, dx, dy int
 
@@ -67,6 +72,7 @@ func (r *Renderer) DrawLine(x1, y1, x2, y2 int, c color.Color) {
 	}
 }
 
+//DrawFaces  Function for Drawing Triangular Faces
 func (r *Renderer) DrawFaces(m meshio.Model, col color.Color) {
 	for _, face := range m.Faces {
 		a, b, c := face.A, face.B, face.C
@@ -75,6 +81,7 @@ func (r *Renderer) DrawFaces(m meshio.Model, col color.Color) {
 	}
 }
 
+//DrawTriangle  Function for drawing Triangles
 func (r *Renderer) DrawTriangle(verts []meshio.Vec3f, c color.Color) {
 	for i := 0; i < 3; i++ {
 		v1 := verts[i]
@@ -89,16 +96,17 @@ func (r *Renderer) DrawTriangle(verts []meshio.Vec3f, c color.Color) {
 	}
 }
 
+//Save  Function for saving the Image to a png File
 func (r *Renderer) Save(fileName string) {
 	file, err := os.Create(fileName)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
-	flipper.FlipV(r.img)
 	png.Encode(file, flipper.FlipV(r.img))
 }
 
+//NewRenderer  Function for creating a new Renderer
 func NewRenderer(i *image.RGBA, w int, h int) *Renderer {
 	r := Renderer{
 		img:    i,

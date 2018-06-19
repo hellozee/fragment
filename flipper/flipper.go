@@ -1,3 +1,9 @@
+/*Package flipper  The sole purpose of this package is to flip the image while
+it being saved by the renderer.
+  Shamelessly copied from https://github.com/disintegration/imaging to avoid having
+  any dependecies other than Go's standard library, only for flipping the generated
+  image.
+*/
 package flipper
 
 import (
@@ -88,6 +94,7 @@ func parallel(start, stop int, fn func(<-chan int)) {
 	wg.Wait()
 }
 
+//FlipV  Function to flip an image horizontally
 func FlipV(img image.Image) *image.NRGBA {
 	src := newScanner(img)
 	dstW := src.w
