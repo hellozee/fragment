@@ -1,8 +1,7 @@
-/*Package meshio  contains the data structures and functions
+/*Package meshio contains the data structures and functions
   required for reading a Wavefront obj to format which
   can be used by the renderer to properly render an image.
 */
-
 package meshio
 
 import (
