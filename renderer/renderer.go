@@ -1,4 +1,4 @@
-/*Package renderer  contains the data structure and functions required for the
+/*Package renderer contains the data structure and functions required for the
 renderer.
   The renderer is the heart of fragment, it is the part which draws the
   lines and points according to the data provided by the other packages.

@@ -1,4 +1,4 @@
-/*Package flipper  is used to flip the image while it is being saved by the renderer.
+/*Package flipper is used to flip the image while it is being saved by the renderer.
 
   Shamelessly copied from https://github.com/disintegration/imaging to avoid having
   any dependecies other than Go's standard library, only for flipping the generated
