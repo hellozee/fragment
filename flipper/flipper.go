@@ -1,8 +1,9 @@
-/*Package flipper is used to flip the image while it is being saved by the renderer.
+/*Package flipper is used to flip the image while it is being saved by the
+renderer.
 
-  Shamelessly copied from https://github.com/disintegration/imaging to avoid having
-  any dependecies other than Go's standard library, only for flipping the generated
-  image.
+  Shamelessly copied from https://github.com/disintegration/imaging to avoid
+  having any dependecies other than Go's standard library, only for flipping
+  the generated image.
 */
 package flipper
 
@@ -28,7 +29,8 @@ func newScanner(img image.Image) *scanner {
 	if img, ok := img.(*image.Paletted); ok {
 		s.palette = make([]color.NRGBA, len(img.Palette))
 		for i := 0; i < len(img.Palette); i++ {
-			s.palette[i] = color.NRGBAModel.Convert(img.Palette[i]).(color.NRGBA)
+			s.palette[i] = color.NRGBAModel.Convert(
+				img.Palette[i]).(color.NRGBA)
 		}
 	}
 	return s
