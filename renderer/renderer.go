@@ -75,11 +75,21 @@ func (r *Renderer) DrawLine(x1, y1, x2, y2 int, c color.Color) {
 }
 
 //DrawFaces  Function for Drawing Triangular Faces
-func (r *Renderer) DrawFaces(m meshio.Model, col color.Color) {
+func (r *Renderer) DrawFaces(m meshio.Model, col color.Color, lightdir meshio.Vec3f) {
 	for _, face := range m.Faces {
 		a, b, c := face.A, face.B, face.C
 		var verts = []meshio.Vec3f{m.Verts[a], m.Verts[b], m.Verts[c]}
-		r.DrawTriangle(verts, col)
+		temp := verts[2].Subtract(verts[0])
+		normal := temp.CrossProduct(verts[1].Subtract(verts[0]))
+		normal.Norm()
+		intensity := normal.DotProduct(lightdir)
+		if intensity > 0 {
+			red := uint8(255.0 * intensity)
+			green := uint8(255.0 * intensity)
+			blue := uint8(255.0 * intensity)
+			shade := color.RGBA{red, green, blue, 255}
+			r.DrawTriangle(verts, shade)
+		}
 	}
 }
 

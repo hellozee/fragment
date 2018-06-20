@@ -65,7 +65,7 @@ func (v1 *Vec3f) CrossProduct(v2 Vec3f) Vec3f {
 }
 
 //Norm  Function for calculating the Norm of a vector
-func (v1 *Vec3f) Norm() float64 {
+func (v1 *Vec3f) Norm() {
 	X := v1.X * v1.X
 	Y := v1.Y * v1.Y
 	Z := v1.Z * v1.Z
@@ -73,7 +73,9 @@ func (v1 *Vec3f) Norm() float64 {
 	sum := X + Y + Z
 	root := math.Sqrt(sum)
 
-	return root
+	v1.X /= root
+	v1.Y /= root
+	v1.Z /= root
 }
 
 //SortByX  Function for sorting vertices according to their x co-ordinate

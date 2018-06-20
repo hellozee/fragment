@@ -18,7 +18,9 @@ func main() {
 
 	model := meshio.NewModel("models/african_head.obj")
 
-	rend.DrawFaces(model, white)
+	lightdir := meshio.Vec3f{X: 0, Y: 0, Z: -1}
+
+	rend.DrawFaces(model, white, lightdir)
 
 	rend.Save("output.png")
 }
