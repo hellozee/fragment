@@ -12,6 +12,7 @@ import (
 	"os"
 
 	"github.com/hellozee/fragment/flipper"
+	"github.com/hellozee/fragment/light"
 	"github.com/hellozee/fragment/meshio"
 )
 
@@ -75,21 +76,16 @@ func (r *Renderer) DrawLine(x1, y1, x2, y2 int, c color.Color) {
 }
 
 //DrawFaces  Function for Drawing Triangular Faces
-func (r *Renderer) DrawFaces(m meshio.Model, col color.Color, lightdir meshio.Vec3f) {
+func (r *Renderer) DrawFaces(m meshio.Model, col color.Color, l light.Light) {
 	for _, face := range m.Faces {
 		a, b, c := face.A, face.B, face.C
 		var verts = []meshio.Vec3f{m.Verts[a], m.Verts[b], m.Verts[c]}
 		temp := verts[2].Subtract(verts[0])
 		normal := temp.CrossProduct(verts[1].Subtract(verts[0]))
 		normal.Norm()
-		intensity := normal.DotProduct(lightdir)
-		if intensity > 0 {
-			red := uint8(255.0 * intensity)
-			green := uint8(255.0 * intensity)
-			blue := uint8(255.0 * intensity)
-			shade := color.RGBA{red, green, blue, 255}
-			r.DrawTriangle(verts, shade)
-		}
+		col := light.Color{R: 1.0, G: 1.0, B: 1.0, A: 1.0}
+		shade := l.SurfaceColor(col, normal)
+		r.DrawTriangle(verts, shade)
 	}
 }
 
