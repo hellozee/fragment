@@ -9,6 +9,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"math"
 	"os"
 
 	"github.com/hellozee/fragment/flipper"
@@ -20,6 +21,7 @@ import (
 type Renderer struct {
 	img           *image.RGBA
 	width, height int
+	zBuffer       []float64
 }
 
 //DrawLine  Function for drawing straight Lines
@@ -89,7 +91,7 @@ func (r *Renderer) DrawFaces(m meshio.Model, col light.Color, l light.Light) {
 }
 
 //FillTriangle  Function for filling the triangle with the given color
-func (r *Renderer) FillTriangle(verts []meshio.Vec2i, c color.Color) {
+func (r *Renderer) FillTriangle(verts []meshio.Vec2i, c color.Color, original []meshio.Vec3f) {
 
 	temp := meshio.SortByX(verts)
 	x1 := temp[0].X
@@ -97,28 +99,19 @@ func (r *Renderer) FillTriangle(verts []meshio.Vec2i, c color.Color) {
 	temp = meshio.SortByY(verts)
 	y1 := temp[0].Y
 	y2 := temp[2].Y
-	verts[1].X, verts[1].Y = verts[1].X-verts[0].X, verts[1].Y-verts[0].Y
-	verts[2].X, verts[2].Y = verts[2].X-verts[0].X, verts[2].Y-verts[0].Y
-	scalar := verts[1].X*verts[2].Y - verts[2].X*verts[1].Y
+
 	for i := x1; i < x2; i++ {
-		p1 := i - verts[0].X
 		for j := y1; j < y2; j++ {
-			p2 := j - verts[0].Y
-			t := p1*(verts[1].Y-verts[2].Y) + p2*(verts[2].X-verts[1].X) +
-				scalar
-			wa := float64(t) / float64(scalar)
-			if wa < 0 || wa > 1 {
+			screen := barycentricCoords(verts, meshio.Vec2i{X: i, Y: j})
+			if screen.X < 0 || screen.Y < 0 || screen.Z < 0 {
 				continue
 			}
-			wb := float64(p1*verts[2].Y-p2*verts[2].X) / float64(scalar)
-			if wb < 0 || wb > 1 {
-				continue
+			z := original[0].Z*screen.X + original[1].Z*screen.Y +
+				original[2].Z*screen.Z
+			if r.zBuffer[i+j*r.width] < z {
+				r.zBuffer[i+j*r.width] = z
+				r.img.Set(i, j, c)
 			}
-			wc := float64(p2*verts[1].X-p1*verts[1].Y) / float64(scalar)
-			if wc < 0 || wc > 1 {
-				continue
-			}
-			r.img.Set(i, j, c)
 		}
 	}
 
@@ -138,7 +131,37 @@ func (r *Renderer) DrawTriangle(verts []meshio.Vec3f, c color.Color) {
 		points = append(points, p)
 	}
 
-	r.FillTriangle(points, c)
+	r.FillTriangle(points, c, verts)
+}
+
+func barycentricCoords(pts []meshio.Vec2i, P meshio.Vec2i) meshio.Vec3f {
+	v1 := meshio.Vec3f{
+		X: float64(pts[2].X - pts[0].X),
+		Y: float64(pts[1].X - pts[0].X),
+		Z: float64(pts[0].X - P.X),
+	}
+
+	v2 := meshio.Vec3f{
+		X: float64(pts[2].Y - pts[0].Y),
+		Y: float64(pts[1].Y - pts[0].Y),
+		Z: float64(pts[0].Y - P.Y),
+	}
+
+	u := v1.CrossProduct(v2)
+
+	if math.Abs(u.Y) < 1 {
+		return meshio.Vec3f{
+			X: -1,
+			Y: 1,
+			Z: 1,
+		}
+	}
+
+	return meshio.Vec3f{
+		X: 1.0 - (u.X+u.Y)/u.Z,
+		Y: u.Y / u.Z,
+		Z: u.X / u.Z,
+	}
 }
 
 //Save  Function for saving the Image to a png File
@@ -153,10 +176,17 @@ func (r *Renderer) Save(fileName string) {
 
 //NewRenderer  Function for creating a new Renderer
 func NewRenderer(i *image.RGBA, w int, h int) *Renderer {
+	buffer := make([]float64, w*h)
+
+	for num, _ := range buffer {
+		buffer[num] = -1 * math.MaxFloat64
+	}
+
 	r := Renderer{
-		img:    i,
-		width:  w,
-		height: h,
+		img:     i,
+		width:   w,
+		height:  h,
+		zBuffer: buffer,
 	}
 
 	return &r
