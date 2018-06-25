@@ -2,7 +2,6 @@ package meshio
 
 import (
 	"math"
-	"math/rand"
 )
 
 //Vec3f  Data Structure for holding a 3d vector with float data
@@ -79,65 +78,33 @@ func (v1 *Vec3f) Norm() {
 }
 
 //SortByX  Function for sorting vertices according to their x co-ordinate
-func SortByX(a []Vec2i) []Vec2i {
-	if len(a) < 2 {
-		return a
-	}
+func SortByX(a [3]Vec2i) [3]Vec2i {
 
-	left, right := 0, len(a)-1
-
-	// Pick a pivot
-	pivotIndex := rand.Int() % len(a)
-
-	// Move the pivot to the right
-	a[pivotIndex], a[right] = a[right], a[pivotIndex]
-
-	// Pile elements smaller than the pivot on the left
-	for i := range a {
-		if a[i].X < a[right].X {
-			a[i], a[left] = a[left], a[i]
-			left++
+	for i := 1; i < 3; i++ {
+		j := i
+		for j > 0 {
+			if a[j-1].X > a[j].X {
+				a[j-1], a[j] = a[j], a[j-1]
+			}
+			j = j - 1
 		}
 	}
-
-	// Place the pivot after the last smaller element
-	a[left], a[right] = a[right], a[left]
-
-	// Go down the rabbit hole
-	SortByX(a[:left])
-	SortByX(a[left+1:])
 
 	return a
 }
 
 //SortByY  Function for sorting vertices according to their y co-ordinate
-func SortByY(a []Vec2i) []Vec2i {
-	if len(a) < 2 {
-		return a
-	}
+func SortByY(a [3]Vec2i) [3]Vec2i {
 
-	left, right := 0, len(a)-1
-
-	// Pick a pivot
-	pivotIndex := rand.Int() % len(a)
-
-	// Move the pivot to the right
-	a[pivotIndex], a[right] = a[right], a[pivotIndex]
-
-	// Pile elements smaller than the pivot on the left
-	for i := range a {
-		if a[i].Y < a[right].Y {
-			a[i], a[left] = a[left], a[i]
-			left++
+	for i := 1; i < 3; i++ {
+		j := i
+		for j > 0 {
+			if a[j-1].Y > a[j].Y {
+				a[j-1], a[j] = a[j], a[j-1]
+			}
+			j = j - 1
 		}
 	}
-
-	// Place the pivot after the last smaller element
-	a[left], a[right] = a[right], a[left]
-
-	// Go down the rabbit hole
-	SortByY(a[:left])
-	SortByY(a[left+1:])
 
 	return a
 }

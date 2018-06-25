@@ -81,7 +81,7 @@ func (r *Renderer) DrawLine(x1, y1, x2, y2 int, c color.Color) {
 func (r *Renderer) DrawFaces(m meshio.Model, col light.Color, l light.Light) {
 	for _, face := range m.Faces {
 		a, b, c := face.A, face.B, face.C
-		var verts = []meshio.Vec3f{m.Verts[a], m.Verts[b], m.Verts[c]}
+		var verts = [3]meshio.Vec3f{m.Verts[a], m.Verts[b], m.Verts[c]}
 		temp := verts[2].Subtract(verts[0])
 		normal := temp.CrossProduct(verts[1].Subtract(verts[0]))
 		normal.Norm()
@@ -91,7 +91,7 @@ func (r *Renderer) DrawFaces(m meshio.Model, col light.Color, l light.Light) {
 }
 
 //FillTriangle  Function for filling the triangle with the given color
-func (r *Renderer) FillTriangle(verts []meshio.Vec2i, c color.Color, original []meshio.Vec3f) {
+func (r *Renderer) FillTriangle(verts [3]meshio.Vec2i, c color.Color, original [3]meshio.Vec3f) {
 
 	temp := meshio.SortByX(verts)
 	x1 := temp[0].X
@@ -118,8 +118,8 @@ func (r *Renderer) FillTriangle(verts []meshio.Vec2i, c color.Color, original []
 }
 
 //DrawTriangle  Function for drawing bare Triangles
-func (r *Renderer) DrawTriangle(verts []meshio.Vec3f, c color.Color) {
-	var points []meshio.Vec2i
+func (r *Renderer) DrawTriangle(verts [3]meshio.Vec3f, c color.Color) {
+	var points [3]meshio.Vec2i
 
 	for i := 0; i < 3; i++ {
 		v := verts[i]
@@ -128,13 +128,13 @@ func (r *Renderer) DrawTriangle(verts []meshio.Vec3f, c color.Color) {
 		y1 := (v.Y + 1.0) * float64(r.height/2)
 
 		p := meshio.Vec2i{X: int(x1), Y: int(y1)}
-		points = append(points, p)
+		points[i] = p
 	}
 
 	r.FillTriangle(points, c, verts)
 }
 
-func barycentricCoords(pts []meshio.Vec2i, P meshio.Vec2i) meshio.Vec3f {
+func barycentricCoords(pts [3]meshio.Vec2i, P meshio.Vec2i) meshio.Vec3f {
 	v1 := meshio.Vec3f{
 		X: float64(pts[2].X - pts[0].X),
 		Y: float64(pts[1].X - pts[0].X),
@@ -178,7 +178,7 @@ func (r *Renderer) Save(fileName string) {
 func NewRenderer(i *image.RGBA, w int, h int) *Renderer {
 	buffer := make([]float64, w*h)
 
-	for num, _ := range buffer {
+	for num := range buffer {
 		buffer[num] = -1 * math.MaxFloat64
 	}
 
