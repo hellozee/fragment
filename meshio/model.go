@@ -13,8 +13,9 @@ import (
 
 //Model  Data Structure for holding a Wavefront obj Model
 type Model struct {
-	Verts []Vec3f
-	Faces []Vec3i
+	Verts     []Vec3f
+	Faces     []Face
+	TexCoords []Vec2f
 }
 
 //NewModel  Function for parsing a Wavefront obj and creating a new model
@@ -39,18 +40,34 @@ func NewModel(filename string) Model {
 
 			m.Verts = append(m.Verts, vertex)
 
-		} else if tokenized[0] == "f" {
-			var f []int
+		}
+
+		if tokenized[0] == "vt" {
+			var texcoords Vec2f
+			texcoords.X, _ = strconv.ParseFloat(tokenized[1], 64)
+			texcoords.Y, _ = strconv.ParseFloat(tokenized[2], 64)
+
+			m.TexCoords = append(m.TexCoords, texcoords)
+
+		}
+
+		if tokenized[0] == "f" {
+			var f, t []int
 			for i := 1; i <= 3; i++ {
 				broken := strings.Split(tokenized[i], "/")
 				num, _ := strconv.Atoi(broken[0])
+				num2, _ := strconv.Atoi(broken[1])
 				f = append(f, num)
+				t = append(t, num2)
 			}
 
-			var face Vec3i
-			face.A = f[0] - 1
-			face.B = f[1] - 1
-			face.C = f[2] - 1
+			var face Face
+			face.Verts.A = f[0] - 1
+			face.Verts.B = f[1] - 1
+			face.Verts.C = f[2] - 1
+
+			face.Uvs.X = t[0] - 1
+			face.Uvs.Y = t[1] - 1
 
 			m.Faces = append(m.Faces, face)
 		}

@@ -19,6 +19,11 @@ type Vec2i struct {
 	X, Y int
 }
 
+//Vec2f  Data Structure for holding a 2d vector with integer data
+type Vec2f struct {
+	X, Y float64
+}
+
 //Add  Function for adding 2 Vectors
 func (v1 *Vec3f) Add(v2 Vec3f) Vec3f {
 	X := v1.X + v2.X

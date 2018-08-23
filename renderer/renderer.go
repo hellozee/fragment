@@ -80,8 +80,8 @@ func (r *Renderer) DrawLine(x1, y1, x2, y2 int, c color.Color) {
 //DrawFaces  Function for Drawing Triangular Faces
 func (r *Renderer) DrawFaces(m meshio.Model, col light.Color, l light.Light) {
 	for _, face := range m.Faces {
-		a, b, c := face.A, face.B, face.C
-		var verts = [3]meshio.Vec3f{m.Verts[a], m.Verts[b], m.Verts[c]}
+		a, b, c := face.Verts.A, face.Verts.B, face.Verts.C
+		verts := [3]meshio.Vec3f{m.Verts[a], m.Verts[b], m.Verts[c]}
 		temp := verts[2].Subtract(verts[0])
 		normal := temp.CrossProduct(verts[1].Subtract(verts[0]))
 		normal.Norm()
@@ -179,7 +179,7 @@ func NewRenderer(i *image.RGBA, w int, h int) *Renderer {
 	buffer := make([]float64, w*h)
 
 	for num := range buffer {
-		buffer[num] = -1 * math.MaxFloat64
+		buffer[num] = -2
 	}
 
 	r := Renderer{
