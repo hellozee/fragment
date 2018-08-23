@@ -59,7 +59,7 @@ func (c *Color) ScalarProduct(v float64) {
 //NewLight  Function for generating a new Light
 func NewLight(pos meshio.Vec3f, r, g, b, a float64) (*Light, error) {
 	if checkValue(r) || checkValue(g) || checkValue(b) || checkValue(a) {
-		return &Light{}, errors.New("Color Value must be betwen 0 and 1")
+		return &Light{}, errors.New("Color Value must be between 0 and 1")
 	}
 	l := Light{
 		Col: Color{
@@ -77,7 +77,7 @@ func NewLight(pos meshio.Vec3f, r, g, b, a float64) (*Light, error) {
 //NewColor  Function for generating a new Color
 func NewColor(r, g, b, a float64) (*Color, error) {
 	if checkValue(r) || checkValue(g) || checkValue(b) || checkValue(a) {
-		return &Color{}, errors.New("Color Value must be betwen 0 and 1")
+		return &Color{}, errors.New("Color Value must be between 0 and 1")
 	}
 	c := Color{
 		R: r,
