@@ -78,20 +78,21 @@ func (r *Renderer) DrawLine(x1, y1, x2, y2 int, c color.Color) {
 }
 
 //DrawFaces  Function for Drawing Triangular Faces
-func (r *Renderer) DrawFaces(m meshio.Model, col light.Color, l light.Light) {
+func (r *Renderer) DrawFaces(m meshio.Model, tex *meshio.Texture, l light.Light) {
 	for _, face := range m.Faces {
 		a, b, c := face.Verts.A, face.Verts.B, face.Verts.C
+		x, y, z := face.Uvs.A, face.Uvs.B, face.Uvs.C
 		verts := [3]meshio.Vec3f{m.Verts[a], m.Verts[b], m.Verts[c]}
 		temp := verts[2].Subtract(verts[0])
 		normal := temp.CrossProduct(verts[1].Subtract(verts[0]))
 		normal.Norm()
-		shade := l.SurfaceColor(col, normal)
-		r.DrawTriangle(verts, shade)
+		uvs := [3]meshio.Vec2f{m.TexCoords[x], m.TexCoords[y], m.TexCoords[z]}
+		r.DrawTriangle(verts, uvs, tex)
 	}
 }
 
 //FillTriangle  Function for filling the triangle with the given color
-func (r *Renderer) FillTriangle(verts [3]meshio.Vec2i, c color.Color, original [3]meshio.Vec3f) {
+func (r *Renderer) FillTriangle(verts [3]meshio.Vec2i, uvs [3]meshio.Vec2i, tex *meshio.Texture, original [3]meshio.Vec3f) {
 
 	temp := meshio.SortByX(verts)
 	x1 := temp[0].X
@@ -110,7 +111,7 @@ func (r *Renderer) FillTriangle(verts [3]meshio.Vec2i, c color.Color, original [
 				original[2].Z*screen.Z
 			if r.zBuffer[i+j*r.width] < z {
 				r.zBuffer[i+j*r.width] = z
-				r.img.Set(i, j, c)
+				r.img.Set(i, j, shades)
 			}
 		}
 	}
@@ -118,20 +119,26 @@ func (r *Renderer) FillTriangle(verts [3]meshio.Vec2i, c color.Color, original [
 }
 
 //DrawTriangle  Function for drawing bare Triangles
-func (r *Renderer) DrawTriangle(verts [3]meshio.Vec3f, c color.Color) {
+func (r *Renderer) DrawTriangle(verts [3]meshio.Vec3f, uvs [3]meshio.Vec2f, tex *meshio.Texture) {
 	var points [3]meshio.Vec2i
+	var uvPoints [3]meshio.Vec2i
 
 	for i := 0; i < 3; i++ {
 		v := verts[i]
+		t := uvs[i]
 
 		x1 := (v.X + 1.0) * float64(r.width/2)
 		y1 := (v.Y + 1.0) * float64(r.height/2)
+		a1 := (t.X + 1.0) * float64(r.width/2)
+		b1 := (t.Y + 1.0) * float64(r.height/2)
 
 		p := meshio.Vec2i{X: int(x1), Y: int(y1)}
+		uP := meshio.Vec2i{X: int(a1), Y: int(b1)}
 		points[i] = p
+		uvPoints[i] = uP
 	}
 
-	r.FillTriangle(points, c, verts)
+	r.FillTriangle(points, uP, tex, verts)
 }
 
 func barycentricCoords(pts [3]meshio.Vec2i, P meshio.Vec2i) meshio.Vec3f {

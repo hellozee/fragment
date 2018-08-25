@@ -19,20 +19,14 @@ type Light struct {
 }
 
 //SurfaceColor  Function for determining color of the given surface
-func (l *Light) SurfaceColor(diffuse Color, normal meshio.Vec3f) color.Color {
+func (l *Light) SurfaceColor(diffuse color.RGBA, normal meshio.Vec3f) color.Color {
 	intensity := normal.DotProduct(l.Position)
-	/*
-		l.Col.ScalarProduct(intensity)
-		col := l.Col.Product(diffuse)
-	*/
-
-	diffuse.ScalarProduct(intensity)
-
+	i := uint8(intensity)
 	c := color.RGBA{
-		R: uint8(diffuse.R * 255),
-		G: uint8(diffuse.G * 255),
-		B: uint8(diffuse.B * 255),
-		A: uint8(diffuse.A * 255),
+		R: diffuse.R * i,
+		G: diffuse.G * i,
+		B: diffuse.B * i,
+		A: diffuse.A,
 	}
 
 	return c

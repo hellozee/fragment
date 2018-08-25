@@ -66,8 +66,9 @@ func NewModel(filename string) Model {
 			face.Verts.B = f[1] - 1
 			face.Verts.C = f[2] - 1
 
-			face.Uvs.X = t[0] - 1
-			face.Uvs.Y = t[1] - 1
+			face.Uvs.A = t[0] - 1
+			face.Uvs.B = t[1] - 1
+			face.Uvs.C = t[2] - 1
 
 			m.Faces = append(m.Faces, face)
 		}
