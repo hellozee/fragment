@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"image"
 
-	"github.com/hellozee/fragment/light"
-	"github.com/hellozee/fragment/meshio"
-	"github.com/hellozee/fragment/renderer"
+	"./light"
+	"./meshio"
+	"./renderer"
 )
 
 func main() {

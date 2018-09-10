@@ -12,9 +12,9 @@ import (
 	"math"
 	"os"
 
-	"github.com/hellozee/fragment/flipper"
-	"github.com/hellozee/fragment/light"
-	"github.com/hellozee/fragment/meshio"
+	"../flipper"
+	"../light"
+	"../meshio"
 )
 
 //Renderer  Data Structure for holding the Renderer

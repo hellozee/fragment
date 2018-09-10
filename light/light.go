@@ -4,7 +4,7 @@ import (
 	"errors"
 	"image/color"
 
-	"github.com/hellozee/fragment/meshio"
+	"../meshio"
 )
 
 //Color  Data Structure for holding float64 color values
