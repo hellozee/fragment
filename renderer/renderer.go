@@ -12,9 +12,9 @@ import (
 	"math"
 	"os"
 
-	"github.com/hellozee/fragment/flipper"
-	"github.com/hellozee/fragment/light"
-	"github.com/hellozee/fragment/meshio"
+	"../flipper"
+	"../light"
+	"../meshio"
 )
 
 //Renderer  Data Structure for holding the Renderer
@@ -111,7 +111,7 @@ func (r *Renderer) FillTriangle(verts [3]meshio.Vec2i, uvs [3]meshio.Vec2i, tex 
 				original[2].Z*screen.Z
 			if r.zBuffer[i+j*r.width] < z {
 				r.zBuffer[i+j*r.width] = z
-				r.img.Set(i, j, shades)
+				r.img.Set(i, j, shades)  // TODO:  init "shades"
 			}
 		}
 	}
@@ -135,10 +135,10 @@ func (r *Renderer) DrawTriangle(verts [3]meshio.Vec3f, uvs [3]meshio.Vec2f, tex 
 		p := meshio.Vec2i{X: int(x1), Y: int(y1)}
 		uP := meshio.Vec2i{X: int(a1), Y: int(b1)}
 		points[i] = p
-		uvPoints[i] = uP
+		uvPoints[i] = uP  
 	}
 
-	r.FillTriangle(points, uP, tex, verts)
+	r.FillTriangle(points, uP, tex, verts) // TODO: init uP
 }
 
 func barycentricCoords(pts [3]meshio.Vec2i, P meshio.Vec2i) meshio.Vec3f {
